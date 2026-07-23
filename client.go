@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"time"
@@ -112,7 +111,7 @@ func (c *Client) fetchWhois(ctx context.Context, req *Request) (*Response, error
 		return nil, &FetchError{err, req.Host}
 	}
 	res := NewResponse(req.Query, req.Host)
-	if res.Body, err = ioutil.ReadAll(io.LimitReader(conn, c.readLimit())); err != nil {
+	if res.Body, err = io.ReadAll(io.LimitReader(conn, c.readLimit())); err != nil {
 		return nil, &FetchError{err, req.Host}
 	}
 	res.DetectContentType("")
@@ -133,7 +132,7 @@ func (c *Client) fetchHTTP(ctx context.Context, req *Request) (*Response, error)
 		return nil, &FetchError{err, req.Host}
 	}
 	res := NewResponse(req.Query, req.Host)
-	if res.Body, err = ioutil.ReadAll(io.LimitReader(hres.Body, c.readLimit())); err != nil {
+	if res.Body, err = io.ReadAll(io.LimitReader(hres.Body, c.readLimit())); err != nil {
 		return nil, &FetchError{err, req.Host}
 	}
 	res.DetectContentType(hres.Header.Get("Content-Type"))
