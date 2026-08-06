@@ -25,7 +25,7 @@ type Client struct {
 	DialContext func(context.Context, string, string) (net.Conn, error) // Only used for port 43 (whois) requests, not HTTP(S)
 	HTTPClient  *http.Client                                            // If nil, http.DefaultClient will be used
 	Timeout     time.Duration                                           // Deprecated (use a Context instead)
-	ReadLimit   int64                                                    // If 0, DefaultReadLimit will be used
+	ReadLimit   int64                                                   // If 0, DefaultReadLimit will be used
 }
 
 // DefaultClient represents a shared whois client with a default timeout, HTTP
@@ -77,6 +77,12 @@ type FetchError struct {
 // Error implements the error interface.
 func (f *FetchError) Error() string {
 	return f.Err.Error()
+}
+
+// Unwrap returns the underlying error, enabling errors.Is and errors.As to
+// see through FetchError.
+func (f *FetchError) Unwrap() error {
+	return f.Err
 }
 
 // Fetch sends the Request to a whois server.
