@@ -26,6 +26,10 @@ type Response struct {
 	Query string
 	Host  string
 
+	// StatusCode holds the HTTP status code for RDAP/HTTP responses;
+	// it is 0 for port 43 WHOIS responses.
+	StatusCode int
+
 	// FetchedAt is the date and time the response was fetched from the server.
 	FetchedAt time.Time
 
