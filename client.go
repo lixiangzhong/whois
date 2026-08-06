@@ -131,6 +131,9 @@ func (c *Client) fetchHTTP(ctx context.Context, req *Request) (*Response, error)
 	if err != nil {
 		return nil, &FetchError{err, req.Host}
 	}
+	// Close the response body so the underlying connection can be
+	// returned to the transport's keep-alive pool.
+	defer hres.Body.Close()
 	res := NewResponse(req.Query, req.Host)
 	if res.Body, err = io.ReadAll(io.LimitReader(hres.Body, c.readLimit())); err != nil {
 		return nil, &FetchError{err, req.Host}
